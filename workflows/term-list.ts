@@ -20,6 +20,8 @@ export async function termListWorkflow(token: string) {
     respondWith: "manual",
   });
 
+  console.log("webhook", webhook.url);
+
   const terms = [];
 
   for await (const request of webhook) {
