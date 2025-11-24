@@ -1,18 +1,21 @@
 {
-  "name": "my-workflow-app",
+  "name": "workflow-local-repro",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:clean": "rm -rf .next && rm -rf app/.well-known &&next dev",
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
   },
   "dependencies": {
+    "lucide-react": "^0.554.0",
     "next": "16.0.3",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "workflow": "4.0.1-beta.19"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
