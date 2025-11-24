@@ -124,5 +124,6 @@ export async function stopWorkflow() {
 function getWebhookUrl(token: string) {
   const host = process.env.VERCEL_URL || "localhost:3000";
   const protocol = process.env.VERCEL_URL ? "https" : "http";
-  return `${protocol}://${host}/.well-known/workflow/v1/webhook/termlist-workflow:${token}`;
+  console.log(host);
+  return `${protocol}://${host}/.well-known/workflow/v1/webhook/termlist-workflow%3A${token}`;
 }
