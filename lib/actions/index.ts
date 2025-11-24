@@ -125,5 +125,7 @@ function getWebhookUrl(token: string) {
   const host = process.env.VERCEL_URL || "localhost:3000";
   const protocol = process.env.VERCEL_URL ? "https" : "http";
   console.log(host);
+  console.log(process.env.VERCEL_PROJECT_PRODUCTION_URL);
+  console.log(process.env.VERCEL_ENV);
   return `${protocol}://${host}/.well-known/workflow/v1/webhook/termlist-workflow%3A${token}`;
 }
