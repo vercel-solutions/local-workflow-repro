@@ -34,16 +34,13 @@ export async function termListWorkflow(token: string) {
       terms.push(term);
     }
 
-    await respondWithStatus(request, terms);
+    await respondWithTerms(request, terms);
   }
 
   return terms;
 }
 
-async function respondWithStatus(
-  request: RequestWithResponse,
-  terms: string[],
-) {
+async function respondWithTerms(request: RequestWithResponse, terms: string[]) {
   "use step";
 
   await request.respondWith(

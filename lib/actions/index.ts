@@ -5,6 +5,9 @@ import { cookies } from "next/headers";
 import { resumeWebhook, start } from "workflow/api";
 import { termListWorkflow } from "@/workflows/term-list";
 
+const host = process.env.VERCEL_URL || "localhost:3000";
+const protocol = process.env.VERCEL_URL ? "https" : "http";
+
 /**
  * Triggers the term list webhook directly with `resumeWebhook`, sending the term to the workflow.
  *
@@ -35,16 +38,13 @@ export async function triggerWebhookWithResume(term: string) {
 }
 
 /**
- * Triggers the term list webhook via route handler.
+ * Triggers the term list webhook via route handler. Works locally and deployed.
  */
 export async function triggerWebhookWithApiRoute(term: string) {
   const token = (await cookies()).get("workflow_token")?.value;
   if (!token) {
     throw new Error("Token not found");
   }
-
-  const host = process.env.VERCEL_URL || "localhost:3000";
-  const protocol = process.env.VERCEL_URL ? "https" : "http";
 
   try {
     const { terms } = await fetch(
@@ -98,5 +98,34 @@ export async function startTermListWorkflow() {
     return run.runId;
   } catch (_) {
     throw new Error("Failed to start workflow");
+  }
+}
+
+/**
+ * Triggers the term list webhook to stop the workflow. Works locally and deployed.
+ */
+export async function stopWorkflow() {
+  const token = (await cookies()).get("workflow_token")?.value;
+  if (!token) {
+    throw new Error("Token not found");
+  }
+  try {
+    fetch(
+      `${protocol}://${host}/.well-known/workflow/v1/webhook/termlist-workflow:${token}`,
+      {
+        method: "POST",
+        body: JSON.stringify({ command: "stop" }),
+      },
+    );
+
+    // Give it a second to start before updating the cache
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    updateTag("workflow-status");
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to trigger webhook via API route");
   }
 }
